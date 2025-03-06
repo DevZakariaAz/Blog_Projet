@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\ArticleRequest;
 
 class ArticleController extends Controller
 {
@@ -32,22 +33,13 @@ class ArticleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ArticleRequest $request)
     {
-        $valideted = $request->validate([
-            'title'=> 'required',
-            'content'=> 'required',
-            'category'=> 'required',
-            'tags'=>'array',
-            'tags.*' => 'exists:tags,id'
-        ]);
 
-        $article = Article::create([
-            'title'=> $valideted['title'],
-            'content'=> $valideted['content'],
-            'user_id'=>Auth::user()->id,
-            'category_id'=> $valideted['category'],
-        ]);
+        $articleData = $request->validated();
+        $articleData['user_id'] = Auth::id(); 
+        $articleData['category_id'] = $request->category;
+        $article = Article::create($articleData);
         $article->tags()->attach($request->tags);
 
 

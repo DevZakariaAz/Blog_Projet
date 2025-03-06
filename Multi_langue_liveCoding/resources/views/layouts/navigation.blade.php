@@ -27,7 +27,6 @@
                                 $language = ["en" => "English", "fr" => "Français", "it" => "Italiano", "ar" => "العربية"];
                                 $lang = Session::get('locale', 'en');
 
-                                // Fallback to 'en' if the key doesn't exist
                                 $lang = isset($language[$lang]) ? $lang : 'en';
                             @endphp
 

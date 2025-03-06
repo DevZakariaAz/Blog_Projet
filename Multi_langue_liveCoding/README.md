@@ -19,7 +19,7 @@ This project provides multilingual support for both **Laravel (backend)** and **
 To install additional language support, run:
 ```sh
 composer require laravel-lang/lang
-php artisan lang:install en fr ar
+php artisan lang:add en fr ar
 ```
 
 ### 2. Create Language Files

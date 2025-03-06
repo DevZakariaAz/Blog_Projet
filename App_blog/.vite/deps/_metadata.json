@@ -2,6 +2,9 @@
   "hash": "6564aa88",
   "configHash": "0919b387",
   "lockfileHash": "a296424e",
+  "browserHash": "ea009df9",
+  "optimized": {},
+  "chunks": {}
   "browserHash": "cadcd0c9",
   "optimized": {
     "jquery": {

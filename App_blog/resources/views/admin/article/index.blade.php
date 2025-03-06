@@ -60,9 +60,11 @@
                                         <a href="{{ Route('article.show', $article) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-eye"></i> {{ __('message.view') }}
                                         </a>
-                                        <a href="{{ Route('article.edit', $article) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-edit"></i> {{ __('message.edit') }}
-                                        </a>
+                                        @can('edit', $article)
+                                            <a href="{{ Route('article.edit', $article) }}" class="btn btn-info btn-sm">
+                                                <i class="fas fa-edit"></i> {{ __('message.edit') }}
+                                            </a>
+                                        @endcan
                                         <form action="{{ route('article.destroy', $article) }}" method="POST" style="display:inline;">
                                             @csrf
                                             @method('DELETE')

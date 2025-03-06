@@ -1,66 +1,108 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+In Laravel, you can use **policies** and **Spatie** together to manage authorization effectively. Here’s how you can set it up:
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### 1. Install Spatie Permissions
+Since you're using Laravel 11, install Spatie's Permission package:
 
-## About Laravel
+```bash
+composer require spatie/laravel-permission
+```
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Then, publish the configuration file and run migrations:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```bash
+php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+php artisan migrate
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 2. Setup Roles and Permissions
+Define roles and permissions in your `RoleSeeder.php`:
 
-## Learning Laravel
+```php
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+public function run()
+{
+    $admin = Role::create(['name' => 'admin']);
+    $user = Role::create(['name' => 'user']);
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+    Permission::create(['name' => 'edit']);
+    Permission::create(['name' => 'delete']);
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    $admin->givePermissionTo(['edit Article plans', 'edit']);
+}
+```
 
-## Laravel Sponsors
+### 3. Assign Roles to Users
+In your `User` model (`app/Models/User.php`), add:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```php
+use Spatie\Permission\Traits\HasRoles;
 
-### Premium Partners
+class User extends Authenticatable
+{
+    use HasRoles;
+}
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Then, assign a role when a user registers:
 
-## Contributing
+```php
+$user->assignRole('user');
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Create a Policy
+Generate a policy:
 
-## Code of Conduct
+```bash
+php artisan make:policy ArticlePolicy --model=Article
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Edit `ArticlePolicy.php`:
 
-## Security Vulnerabilities
+```php
+use App\Models\User;
+use App\Models\Article;
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+class ArticlePolicy
+{
+    public function update(User $user, Article $article): bool
+    {
+        return $user->id === $article->user->id && $user->hasPermissionTo('edit');
+    }
+}
+```
 
-## License
+### 5. Register the Policy
+In `AppServiceProvider.php`:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```php
+use App\Models\Article;
+use App\Policies\ArticlePolicy;
+
+protected $policies = [
+    Article::class => ArticlePolicy::class,
+];
+```
+
+### 6. Use the Policy in Controllers or Blade
+#### In Controllers:
+```php
+public function update(Request $request, Article $article)
+{
+    $this->authorize('edit', $article);
+    // Update logic
+}
+```
+
+#### In Blade Views:
+```blade
+@can('edit', $article)
+    <a href="{{ route('Article.edit', $article) }}">Edit</a>
+@endcan
+```
+
+### Summary:
+- **Spatie handles roles and permissions**
+- **Policies define granular access control**
+- **Use `$this->authorize('edit', $article)` to enforce policies**

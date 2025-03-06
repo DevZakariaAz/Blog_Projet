@@ -17,6 +17,7 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::paginate(4);
+        
         return view('admin.article.index', compact('articles'));
     }
 
@@ -70,6 +71,8 @@ class ArticleController extends Controller
      */
     public function update(Request $request, Article $article)
     {
+        $this->authorize('edit', $article);
+
         $valideted = $request->validate([
             'title'=> 'required',
             'content'=> 'required',

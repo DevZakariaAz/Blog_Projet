@@ -44,4 +44,5 @@ Route::group(['middleware' => ['permission:view admin']], function () {
     Route::resource('/dashboard/category', CategoryController::class);
     Route::resource('/dashboard/tag', TagController::class);
     Route::resource("/dashboard/user",UserController::class);
+    // Route::get('change', [LanguageController::class, 'change'])->name("lang.change");
 });

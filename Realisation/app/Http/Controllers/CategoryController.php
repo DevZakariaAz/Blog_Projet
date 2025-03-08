@@ -2,88 +2,61 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Models\Category;
-use Illuminate\Http\Request;
+use App\Http\Requests\CategoryRequest;
+use App\Services\CategoryService;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-    */
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     public function index()
     {
         $categories = Category::paginate(4);
-        return view('admin.category.index',compact('categories'));
+        return view('admin.category.index', compact('categories'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('admin.category.create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'slug'  => 'required|max:255',
-        ]);
+        $validated = $request->validated();
 
-        Category::create([
-            'name' => $validated['title'],
-            'slug'=> $validated['slug']
-        ]);
+        $this->categoryService->store($validated);
 
         return redirect()->route('category.index')->with('success', 'Catégorie créé avec succès.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
-        return view('admin.category.show',compact('category'));
-    }
+        $validated = $request->validated();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Category $category)
-    {
-
-        return view('admin.category.edit',compact('category'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
-    {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'slug'  => 'required|max:255',
-        ]);
-
-        $category->update([
-            'name' => $validated['title'],
-            'slug'=> $validated['slug']
-        ]);
+        $this->categoryService->update($category, $validated);
 
         return redirect()->route('category.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    public function show(Category $category)
+    {
+        return view('admin.category.show', compact('category'));
+    }
+
+    public function edit(Category $category)
+    {
+        return view('admin.category.edit', compact('category'));
+    }
+
     public function destroy(Category $category)
     {
-        $category->delete();
+        $this->categoryService->destroy($category);
         return redirect()->route('category.index');
     }
 }

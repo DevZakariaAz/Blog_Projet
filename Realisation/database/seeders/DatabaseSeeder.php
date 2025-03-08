@@ -2,39 +2,34 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // Seed the default user
-        if (User::where('email', 'test@example.com')->doesntExist()) {
-            User::create([
-                'name' => 'Test User',
-                'email' => 'test@example.com',
-                'password' => bcrypt('password'), // Or any password you want
-            ]);
-        }
+        $this->call(RolePermissionSeeder::class);
+        $this->runModuleSeeders();
+    }
 
-        $user = User::create([
-            'name'=>'admin',
-            'email'=>'admin@gmail.com',
-            'password'=>bcrypt('admin')
-        ]);
-        // Call other seeders
-        $this->call([
-            CategorySeeder::class,  // Add CategorySeeder
-            TagSeeder::class,       // Add TagSeeder
-            ArticleSeeder::class,   // Add ArticleSeeder
-            ArticleTagSeeder::class,// Add ArticleTagSeeder
-            RolePermissionSeeder::class,// Add Role & permission
-        ]);
-        $user->assignRole('admin');
+    protected function runModuleSeeders(): void
+    {
+        $modulesPath = base_path('modules');
+        $modules = File::directories($modulesPath);
+
+        foreach ($modules as $module) {
+            if (basename($module) === 'Core') {
+                continue;
+            }
+
+            $seederFile = $module . '/Database/Seeders/' . Str::studly(basename($module)) . 'Seeder.php';
+
+            if (File::exists($seederFile)) {
+                $seederClass = 'Modules\\' . Str::studly(basename($module)) . '\\Database\\Seeders\\' . Str::studly(basename($module)) . 'Seeder';
+                $this->call($seederClass);
+            }
+        }
     }
 }
-

@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use Modules\Blog\Models\User;
 use Illuminate\Database\Seeder;
+use Modules\Blog\Database\Seeders\DatabaseSeederBlog;
 
 class DatabaseSeeder extends Seeder
 {
@@ -28,11 +29,8 @@ class DatabaseSeeder extends Seeder
         ]);
         // Call other seeders
         $this->call([
-            CategorySeeder::class,  // Add CategorySeeder
-            TagSeeder::class,       // Add TagSeeder
-            ArticleSeeder::class,   // Add ArticleSeeder
-            ArticleTagSeeder::class,// Add ArticleTagSeeder
             RolePermissionSeeder::class,// Add Role & permission
+            DatabaseSeederBlog::class
         ]);
         $user->assignRole('admin');
     }

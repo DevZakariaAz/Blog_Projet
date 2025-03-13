@@ -3,9 +3,9 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use App\Models\Article;
-use App\Policies\ArticlePolicy;
+use Modules\Blog\App\Policies\ArticlePolicy;
 use Modules\Blog\App\Providers\BlogServiceProvider;
+use Modules\Blog\Models\Article;
 use PhpParser\Node\Expr\AssignOp\Mod;
 
 class AppServiceProvider extends ServiceProvider

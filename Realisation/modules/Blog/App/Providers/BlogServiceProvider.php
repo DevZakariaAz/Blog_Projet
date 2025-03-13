@@ -13,7 +13,7 @@ class BlogServiceProvider extends ServiceProvider
         $this->loadRoutesFrom(__DIR__.'/../../routes/web.php');
 
         // Charger les migrations
-        $this->loadMigrationsFrom(__DIR__.'../../Database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/../../Database/migrations');
 
         // Charger les vues
         $this->loadViewsFrom(__DIR__.'../../Resources/views', 'Blog');

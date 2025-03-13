@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Modules\Blog\Models\Article;
 use Modules\Blog\App\Policies\ArticlePolicy;
 use Modules\Blog\App\Providers\BlogServiceProvider;
+use Modules\Blog\Models\Article;
 use PhpParser\Node\Expr\AssignOp\Mod;
 
 class AppServiceProvider extends ServiceProvider

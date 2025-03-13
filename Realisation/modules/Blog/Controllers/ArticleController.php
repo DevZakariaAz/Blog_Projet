@@ -21,14 +21,14 @@ class ArticleController extends Controller
     public function index()
     {
         $articles = Article::paginate(4);
-        return view('admin.article.index', compact('articles'));
+        return view('Blog::admin.article.index', compact('articles'));
     }
 
     public function create()
     {
         $categories = Category::all();
         $tags = Tag::all();
-        return view('admin.article.create', compact('categories', 'tags'));
+        return view('Blog::admin.article.create', compact('categories', 'tags'));
     }
 
     public function store(ArticleRequest $request)
@@ -42,14 +42,14 @@ class ArticleController extends Controller
 
     public function show(Article $article)
     {
-        return view('admin.article.show', compact('article'));
+        return view('Blog::admin.article.show', compact('article'));
     }
 
     public function edit(Article $article)
     {
         $categories = Category::all();
         $tags = Tag::all();
-        return view('admin.article.edit', compact('article', 'categories', 'tags'));
+        return view('Blog::admin.article.edit', compact('article', 'categories', 'tags'));
     }
 
     public function update(Request $request, Article $article)

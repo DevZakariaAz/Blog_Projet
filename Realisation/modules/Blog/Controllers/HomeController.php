@@ -45,7 +45,7 @@ class HomeController extends Controller
 
         $articles = $articlesQuery->paginate(6); // Paginate the results
 
-        return view('public.articles.index', compact('articles', 'categories', 'search', 'category'));
+        return view('Blog::public.articles.index', compact('articles', 'categories', 'search', 'category'));
     }
 
     /**
@@ -56,7 +56,7 @@ class HomeController extends Controller
     public function publicShow($id)
     {
         $article = Article::findOrFail($id);
-        return view('public.articles.show', compact('article'));
+        return view('Blog::public.articles.show', compact('article'));
     }
 
     /**

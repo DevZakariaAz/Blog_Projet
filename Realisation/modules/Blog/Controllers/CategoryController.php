@@ -19,12 +19,12 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::paginate(4);
-        return view('admin.category.index', compact('categories'));
+        return view('Blog::admin.category.index', compact('categories'));
     }
 
     public function create()
     {
-        return view('admin.category.create');
+        return view('Blog::admin.category.create');
     }
 
     public function store(CategoryRequest $request)
@@ -47,12 +47,12 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        return view('admin.category.show', compact('category'));
+        return view('Blog::admin.category.show', compact('category'));
     }
 
     public function edit(Category $category)
     {
-        return view('admin.category.edit', compact('category'));
+        return view('Blog::admin.category.edit', compact('category'));
     }
 
     public function destroy(Category $category)

@@ -15,7 +15,7 @@ class UserController extends Controller
     public function index()
     {
        $users = User::paginate(5);
-       return view('admin.user.index',compact('users'));
+       return view('Blog::admin.user.index',compact('users'));
     }
 
     /**
@@ -40,7 +40,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         {{ $permissions =  $user->permissions;}}
-        return view('admin.user.show',compact('user','permissions'));
+        return view('Blog::admin.user.show',compact('user','permissions'));
 
     }
 
@@ -53,7 +53,7 @@ class UserController extends Controller
         $permissions = Permission::all();
         $userRole = $user->getRoleNames()->first;
         $userPermissions = $user->permissions->pluck('id')->toArray();
-        return view('admin.user.edit',compact('user','roles','permissions','userRole','userPermissions'));
+        return view('Blog::admin.user.edit',compact('user','roles','permissions','userRole','userPermissions'));
     }
 
     /**

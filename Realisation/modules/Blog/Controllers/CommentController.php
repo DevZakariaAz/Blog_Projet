@@ -12,13 +12,13 @@ class CommentController extends Controller
     public function index()
     {
         $comments = Comment::All();
-        return view("admin.comment.index", compact("comments"));
+        return view("Blog::admin.comment.index", compact("comments"));
     }
 
     public function indexByArticle(Article $article)
     {
         $comments = $article->comments;
-        return view("admin.comment.indexByArticle", compact("comments", "article"));
+        return view("Blog::admin.comment.indexByArticle", compact("comments", "article"));
     }
 
     public function create()
@@ -28,12 +28,12 @@ class CommentController extends Controller
 
     public function show(Comment $comment)
     {
-        return view("admin.comment.show", compact("comment"));
+        return view("Blog::admin.comment.show", compact("comment"));
     }
 
     public function edit(Comment $comment)
     {
-        return view("admin.comment.edit", compact("comment"));
+        return view("Blog::admin.comment.edit", compact("comment"));
     }
 
     public function update(CommentRequest $request, Comment $comment)

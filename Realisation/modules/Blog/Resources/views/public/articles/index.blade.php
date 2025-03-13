@@ -1,4 +1,4 @@
-@extends('layouts.public')
+@extends('Blog::layouts.public')
 
 @section('content')
 

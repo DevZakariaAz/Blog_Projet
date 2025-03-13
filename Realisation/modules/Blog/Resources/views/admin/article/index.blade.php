@@ -22,6 +22,14 @@
                         <a href="{{ Route('article.create') }}" class="btn btn-primary btn-sm p-2 text-white">
                             <i class="fas fa-plus"></i> {{ __('message.add_article') }}
                         </a>
+                        <!-- Export Button -->
+                        <button class="btn btn-success btn-sm p-2" data-bs-toggle="modal" data-bs-target="#exportModal">
+                            <i class="fas fa-download"></i> {{ __('message.export') }}
+                        </button>
+                        <!-- Import Button -->
+                        <button class="btn btn-warning btn-sm p-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                            <i class="fas fa-upload"></i> {{ __('message.import') }}
+                        </button>
                     </ol>
                 </div>
             </div>
@@ -75,7 +83,6 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            <!-- Plus de lignes ici -->
                         </tbody>
                     </table>
                 </div>
@@ -85,4 +92,52 @@
         </div>
         {{ $articles->links('pagination::bootstrap-5') }}
     </section>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('article.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">Import Articles</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="file" name="file" class="form-control" accept=".xls,.xlsx,.csv">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('article.export') }}" method="GET">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exportModalLabel">Export Articles</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Choose the format for export:</p>
+                        <select class="form-select" name="format">
+                            <option value="xls">Excel (XLS)</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Export</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection

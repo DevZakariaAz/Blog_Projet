@@ -15,4 +15,6 @@ return [
     'view' => 'View',
     'edit' => 'Edit',
     'delete' => 'Delete',
+    'export' => 'Export',
+    'import' => 'Import',
 ];

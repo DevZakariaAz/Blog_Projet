@@ -1,108 +1,95 @@
-In Laravel, you can use **policies** and **Spatie** together to manage authorization effectively. Here’s how you can set it up:
+# Blog_Projet
 
-### 1. Install Spatie Permissions
-Since you're using Laravel 11, install Spatie's Permission package:
+Follow these steps to set up and run the **Blog_Projet** application on your local machine:
 
-```bash
-composer require spatie/laravel-permission
-```
+## Clone the Project:
 
-Then, publish the configuration file and run migrations:
+1. Clone the repository and navigate to the project directory:
 
-```bash
-php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
-php artisan migrate
-```
+    ```bash
+    git clone https://github.com/DevZakariaAz/Blog_Projet.git
+    cd Blog_Projet
+    ```
 
-### 2. Setup Roles and Permissions
-Define roles and permissions in your `RoleSeeder.php`:
+2. Go to the `app` directory:
 
-```php
-use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+    ```bash
+    cd app
+    ```
 
-public function run()
-{
-    $admin = Role::create(['name' => 'admin']);
-    $user = Role::create(['name' => 'user']);
+## Install Dependencies:
 
-    Permission::create(['name' => 'edit']);
-    Permission::create(['name' => 'delete']);
+3. Install PHP dependencies using Composer:
 
-    $admin->givePermissionTo(['edit Article plans', 'edit']);
-}
-```
+    ```bash
+    composer install
+    ```
 
-### 3. Assign Roles to Users
-In your `User` model (`app/Models/User.php`), add:
+4. Set up the environment configuration:
 
-```php
-use Spatie\Permission\Traits\HasRoles;
+    ```bash
+    cp .env.example .env
+    ```
 
-class User extends Authenticatable
-{
-    use HasRoles;
-}
-```
+5. Generate the application key:
 
-Then, assign a role when a user registers:
+    ```bash
+    php artisan key:generate
+    ```
+## partier securiter
+7. Installer package via composer
+     ```bash
+    composer require spatie/laravel-permission
+    ```
 
-```php
-$user->assignRole('user');
-```
+## Set Up the Database:
 
-### 4. Create a Policy
-Generate a policy:
+8. Run the database migrations:
 
-```bash
-php artisan make:policy ArticlePolicy --model=Article
-```
+    ```bash
+    php artisan migrate
+    ```
 
-Edit `ArticlePolicy.php`:
+9. Seed the database with initial data (if required):
 
-```php
-use App\Models\User;
-use App\Models\Article;
+    ```bash
+    php artisan db:seed
+    ```
 
-class ArticlePolicy
-{
-    public function update(User $user, Article $article): bool
-    {
-        return $user->id === $article->user->id && $user->hasPermissionTo('edit');
-    }
-}
-```
+## Install Frontend Dependencies:
 
-### 5. Register the Policy
-In `AppServiceProvider.php`:
+10. Install Node.js dependencies:
 
-```php
-use App\Models\Article;
-use App\Policies\ArticlePolicy;
+    ```bash
+    npm install
+    ```
 
-protected $policies = [
-    Article::class => ArticlePolicy::class,
-];
-```
+11. Build the frontend assets:
 
-### 6. Use the Policy in Controllers or Blade
-#### In Controllers:
-```php
-public function update(Request $request, Article $article)
-{
-    $this->authorize('edit', $article);
-    // Update logic
-}
-```
+    ```bash
+    npm run build
+    ```
 
-#### In Blade Views:
-```blade
-@can('edit', $article)
-    <a href="{{ route('Article.edit', $article) }}">Edit</a>
-@endcan
-```
+12. (Optional) Start the development server for live updates:
 
-### Summary:
-- **Spatie handles roles and permissions**
-- **Policies define granular access control**
-- **Use `$this->authorize('edit', $article)` to enforce policies**
+    ```bash
+    npm run dev
+    ```
+
+## Run the Application:
+
+13. Serve the application:
+
+    ```bash
+    php artisan serve
+    ```
+
+## Comptes 
+
+### Admin 
+
+- login : admin@gmail.com
+- password : admin
+
+
+Your application should now be running! Open your browser and navigate to the local development server URL provided in the terminal (usually `http://127.0.0.1:8000`).

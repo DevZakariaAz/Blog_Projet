@@ -18,7 +18,7 @@ class DashboardController extends Controller
         $totalComments = Comment::count();
         $totalCategories = Category::count();
         $totalArticles = Article::count();
-        return view('admin.dashboard',
+        return view('Blog::admin.dashboard',
         compact('totalUsers','totalComments','totalCategories','totalArticles'));
     }
 }

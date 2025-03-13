@@ -1,4 +1,4 @@
-@extends('layouts.layout')
+@extends('Blog::layouts.layout')
 
 @section('content')
 <div class="card card-outline card-primary">

@@ -16,7 +16,7 @@ class BlogServiceProvider extends ServiceProvider
         $this->loadMigrationsFrom(__DIR__.'/../../Database/migrations');
 
         // Charger les vues
-        $this->loadViewsFrom(__DIR__.'../../Resources/views', 'Blog');
+        $this->loadViewsFrom(__DIR__.'/../../Resources/views', 'Blog');
 
         // Publier les assets si nécessaire
         $this->publishes([

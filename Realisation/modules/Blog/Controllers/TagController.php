@@ -16,7 +16,7 @@ class TagController extends Controller
         // dd($tags->toSql());
         // dd( $tags->currentPage());
        
-        return view('admin.tag.index',compact('tags'));
+        return view('Blog::admin.tag.index',compact('tags'));
     }
 
     /**
@@ -24,7 +24,7 @@ class TagController extends Controller
      */
     public function create()
     {
-        return view('admin.tag.create');
+        return view('Blog::admin.tag.create');
     }
 
     /**
@@ -50,7 +50,7 @@ class TagController extends Controller
      */
     public function show(Tag $tag)
     {
-        return view('admin.tag.show',compact('tag'));
+        return view('Blog::admin.tag.show',compact('tag'));
 
     }
 
@@ -59,7 +59,7 @@ class TagController extends Controller
      */
     public function edit(Tag $tag)
     {
-        return view('admin.tag.edit',compact('tag'));
+        return view('Blog::admin.tag.edit',compact('tag'));
 
     }
 

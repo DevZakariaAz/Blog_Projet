@@ -1,5 +1,5 @@
 
-@extends('layouts.admin')
+@extends('Blog::layouts.admin')
     @section('content')
         <div class="card card-primary">
             <div class="container-fluid">

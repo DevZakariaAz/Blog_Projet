@@ -9,7 +9,7 @@ use Modules\Blog\App\Requests\ArticleRequest;
 use Modules\Blog\Services\ArticleService;
 use Modules\Blog\App\Exports\ArticlesExport;
 use Modules\Blog\App\Imports\ArticlesImport;
-use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ArticleController extends Controller
 {
@@ -85,6 +85,6 @@ class ArticleController extends Controller
             return redirect()->back()->with('error', 'Format non autorisé.');
         }
 
-        return Excel::download(new ArticlesExport, "articles.$format", $format === 'csv' ? Excel::CSV : Excel::XLSX);
+        return Excel::download(new ArticlesExport, "articles.$format", $format === 'csv' ? \Maatwebsite\Excel\Excel::CSV : \Maatwebsite\Excel\Excel::XLSX);
     }
 }

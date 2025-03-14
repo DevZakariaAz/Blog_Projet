@@ -16,9 +16,26 @@
                 </div>
             </div>
 
-            <!-- Buttons for Add, Import, Export -->
-            <div class="row mb-2 justify-content-end">
-                <div class="col-sm-6 text-right">
+            <!-- Search and Buttons Section -->
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <!-- Search Form on the Left -->
+                    <form action="{{ route('article.index') }}" method="GET">
+                        <div class="input-group input-group-sm float-left col-md-12 p-0">
+                            <input type="text" name="crud_search_input" id="crud_search_input"
+                                   class="form-control float-left" placeholder="Recherche by name"
+                                   value="{{ request('crud_search_input') }}">
+                            <div class="input-group-append">
+                                <button type="submit" class="btn btn-default">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-md-6 text-right">
+                    <!-- Buttons on the Right -->
                     <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
                         <i class="fas fa-file-import"></i> {{ __('message.import') }}
                     </button>
@@ -37,14 +54,13 @@
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-header">
+                <div class="card-header info-header">
                     <h3 class="card-title">{{ __('message.table_articles') }}</h3>
                 </div>
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th>{{ __('Id') }}</th>
                                 <th>{{ __('message.title') }}</th>
                                 <th>{{ __('message.category') }}</th>
                                 <th>{{ __('message.user') }}</th>
@@ -55,7 +71,6 @@
                         <tbody>
                             @foreach ($articles as $article)
                                 <tr>
-                                    <td>{{ $article->id }}</td>
                                     <td>{{ $article->title }}</td>
                                     <td>{{ $article->category->name }}</td>
                                     <td>{{ $article->user->name }}</td>
@@ -85,9 +100,9 @@
             </div>
         </div>
 
-<div class="d-flex justify-content-center">
-    {{ $articles->links('pagination::bootstrap-5') }}
-</div>
+        <div class="d-flex justify-content-center">
+            {{ $articles->links('pagination::bootstrap-5') }}
+        </div>
     </section>
 
     <!-- Import Modal -->

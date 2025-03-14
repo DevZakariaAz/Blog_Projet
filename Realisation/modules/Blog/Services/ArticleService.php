@@ -10,33 +10,43 @@ class ArticleService
     /**
      * Store a new article.
      */
-    public function store($data)
+    public function store(array $data)
     {
         $data['user_id'] = Auth::id();
         $article = Article::create($data);
-        $article->tags()->attach($data['tags']);
+        $this->syncTags($article, $data['tags']);
         return $article;
     }
 
     /**
      * Update an existing article.
      */
-    public function update($article, $data)
+    public function update(Article $article, array $data)
     {
         $article->update([
             'title' => $data['title'],
             'content' => $data['content'],
             'category_id' => $data['category'],
         ]);
-        $article->tags()->sync($data['tags']);
+        $this->syncTags($article, $data['tags']);
         return $article;
     }
 
     /**
      * Delete an article.
      */
-    public function destroy($article)
+    public function destroy(Article $article)
     {
         $article->delete();
+    }
+
+    /**
+     * Sync tags with article.
+     */
+    protected function syncTags(Article $article, array $tags)
+    {
+        if (!empty($tags)) {
+            $article->tags()->sync($tags);
+        }
     }
 }

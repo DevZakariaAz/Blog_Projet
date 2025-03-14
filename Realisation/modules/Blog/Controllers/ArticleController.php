@@ -5,9 +5,11 @@ namespace Modules\Blog\Controllers;
 use Modules\Blog\Models\Article;
 use Modules\Blog\Models\Category;
 use Modules\Blog\Models\Tag;
-use Illuminate\Http\Request;
 use Modules\Blog\App\Requests\ArticleRequest;
 use Modules\Blog\Services\ArticleService;
+use Modules\Blog\App\Exports\ArticlesExport;
+use Modules\Blog\App\Imports\ArticlesImport;
+use Maatwebsite\Excel\Excel;
 
 class ArticleController extends Controller
 {
@@ -20,23 +22,21 @@ class ArticleController extends Controller
 
     public function index()
     {
-        $articles = Article::paginate(4);
+        $articles = Article::paginate(7);
         return view('Blog::admin.article.index', compact('articles'));
     }
 
     public function create()
     {
-        $categories = Category::all();
-        $tags = Tag::all();
-        return view('Blog::admin.article.create', compact('categories', 'tags'));
+        return view('Blog::admin.article.create', [
+            'categories' => Category::all(),
+            'tags' => Tag::all()
+        ]);
     }
 
     public function store(ArticleRequest $request)
     {
-        $articleData = $request->validated();
-        $articleData['category_id'] = $request->category;
-        $this->articleService->store($articleData);
-
+        $this->articleService->store($request->validated());
         return redirect()->route('article.index')->with('success', 'Article créé avec succès.');
     }
 
@@ -47,25 +47,17 @@ class ArticleController extends Controller
 
     public function edit(Article $article)
     {
-        $categories = Category::all();
-        $tags = Tag::all();
-        return view('Blog::admin.article.edit', compact('article', 'categories', 'tags'));
+        return view('Blog::admin.article.edit', [
+            'article' => $article,
+            'categories' => Category::all(),
+            'tags' => Tag::all()
+        ]);
     }
 
-    public function update(Request $request, Article $article)
+    public function update(ArticleRequest $request, Article $article)
     {
         $this->authorize('edit', $article);
-
-        $validated = $request->validate([
-            'title' => 'required',
-            'content' => 'required',
-            'category' => 'required',
-            'tags' => 'array',
-            'tags.*' => 'exists:tags,id'
-        ]);
-
-        $this->articleService->update($article, $validated);
-
+        $this->articleService->update($article, $request->validated());
         return redirect()->route('article.index')->with('success', 'Article mis à jour avec succès.');
     }
 
@@ -73,5 +65,26 @@ class ArticleController extends Controller
     {
         $this->articleService->destroy($article);
         return redirect()->route('article.index')->with('success', 'Article supprimé avec succès.');
+    }
+    
+    public function import(ArticleRequest $request)
+    {
+        if ($request->isImport()) {
+            Excel::import(new ArticlesImport, $request->file('file'));
+            return redirect()->route('article.index')->with('success', 'Articles imported successfully.');
+        }
+
+        return back()->withErrors(['file' => 'Aucun fichier valide n\'a été fourni.']);
+    }
+
+    public function export($format = 'xlsx')
+    {
+        $allowedFormats = ['csv', 'xlsx'];
+
+        if (!in_array($format, $allowedFormats)) {
+            return redirect()->back()->with('error', 'Format non autorisé.');
+        }
+
+        return Excel::download(new ArticlesExport, "articles.$format", $format === 'csv' ? Excel::CSV : Excel::XLSX);
     }
 }

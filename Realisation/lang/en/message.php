@@ -15,4 +15,10 @@ return [
     'view' => 'View',
     'edit' => 'Edit',
     'delete' => 'Delete',
+    'export' => 'Export',
+    'import' => 'Import',
+    'close' => 'Close',
+    'import_articles' => 'Import Articles',
+    'export_articles' => 'Export Articles',
+    'choose_export_format' => 'Choose Export Format',
 ];

@@ -1,4 +1,5 @@
 @extends('Blog::layouts.admin')
+
 @section('content')
     <!-- Content Header -->
     <section class="content-header">
@@ -14,15 +15,19 @@
                     </ol>
                 </div>
             </div>
-        </div>
-        <div class="container-fluid">
+
+            <!-- Buttons for Add, Import, Export -->
             <div class="row mb-2 justify-content-end">
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <a href="{{ Route('article.create') }}" class="btn btn-primary btn-sm p-2 text-white">
-                            <i class="fas fa-plus"></i> {{ __('message.add_article') }}
-                        </a>
-                    </ol>
+                <div class="col-sm-6 text-right">
+                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <i class="fas fa-file-import"></i> {{ __('message.import') }}
+                    </button>
+                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#exportModal">
+                        <i class="fas fa-file-export"></i> {{ __('message.export') }}
+                    </button>
+                    <a href="{{ route('article.create') }}" class="btn btn-info btn-sm ml-2">
+                        <i class="fas fa-plus"></i> {{ __('message.add_article') }}
+                    </a>
                 </div>
             </div>
         </div>
@@ -35,12 +40,11 @@
                 <div class="card-header">
                     <h3 class="card-title">{{ __('message.table_articles') }}</h3>
                 </div>
-                <!-- /.card-header -->
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th>{{ __('message.number') }}</th>
+                                <th>{{ __('Id') }}</th>
                                 <th>{{ __('message.title') }}</th>
                                 <th>{{ __('message.category') }}</th>
                                 <th>{{ __('message.user') }}</th>
@@ -57,11 +61,11 @@
                                     <td>{{ $article->user->name }}</td>
                                     <td>{{ $article->created_at->format('Y-m-d') }}</td>
                                     <td>
-                                        <a href="{{ Route('article.show', $article) }}" class="btn btn-primary btn-sm">
+                                        <a href="{{ route('article.show', $article) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-eye"></i> {{ __('message.view') }}
                                         </a>
                                         @can('edit', $article)
-                                            <a href="{{ Route('article.edit', $article) }}" class="btn btn-info btn-sm">
+                                            <a href="{{ route('article.edit', $article) }}" class="btn btn-info btn-sm">
                                                 <i class="fas fa-edit"></i> {{ __('message.edit') }}
                                             </a>
                                         @endcan
@@ -75,14 +79,62 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            <!-- Plus de lignes ici -->
                         </tbody>
                     </table>
                 </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
         </div>
-        {{ $articles->links('pagination::bootstrap-5') }}
+
+<div class="d-flex justify-content-center">
+    {{ $articles->links('pagination::bootstrap-5') }}
+</div>
     </section>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('article.import') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="importModalLabel">{{ __('message.import_articles') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="file" name="file" class="form-control" accept=".xls,.xlsx,.csv" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('message.close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('message.import') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('article.export') }}" method="GET">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exportModalLabel">{{ __('message.export_articles') }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{ __('message.choose_export_format') }}</p>
+                        <select class="form-select" name="format" required>
+                            <option value="xls">Excel (XLS)</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('message.close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('message.export') }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection

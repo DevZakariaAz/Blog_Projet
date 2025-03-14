@@ -2,6 +2,10 @@
 
 namespace Modules\Blog\Controllers;
 
+use Maatwebsite\Excel\Facades\Excel;
+use Modules\Blog\App\Imports\UserImport;
+use Modules\Blog\App\Exports\UserExport;
+
 use Modules\Blog\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Permission;
@@ -72,6 +76,19 @@ class UserController extends Controller
         $user->syncPermissions($request->permissions ?? []);
     
         return redirect()->route('user.index')->with('success', 'User updated successfully!');
+    }
+    public function import(Request $request)
+    {
+        $file = $request->file('file');
+
+        $import = new UserImport();
+        $import->import($file);
+
+        return back()->with('success', 'Users Imported Successfully!');
+    }
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new UserExport, 'users.xlsx');
     }
 
     /**

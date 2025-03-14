@@ -20,6 +20,8 @@ Route::get('/dashboard', function () {
 Route::get('articles/{article}/comments', [CommentController::class, 'indexByArticle'])->name('comment.indexByArticle');
 Route::delete('articles/comment/{comment}', [CommentController::class, 'destroyByArticle'])->name('comment.destroyByArticle');
 
+Route::post('article/import', [ArticleController::class, 'import'])->name('article.import');
+Route::get('article/export', [ArticleController::class, 'export'])->name('article.export');
 
 
 Route::resource('/dashboard/comment',CommentController::class);

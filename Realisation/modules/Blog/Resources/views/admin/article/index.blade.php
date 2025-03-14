@@ -1,4 +1,5 @@
 @extends('Blog::layouts.admin')
+
 @section('content')
     <!-- Content Header -->
     <section class="content-header">
@@ -14,23 +15,19 @@
                     </ol>
                 </div>
             </div>
-        </div>
-        <div class="container-fluid">
+
+            <!-- Buttons for Add, Import, Export -->
             <div class="row mb-2 justify-content-end">
-                <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-right">
-                        <a href="{{ Route('article.create') }}" class="btn btn-primary btn-sm p-2 text-white">
-                            <i class="fas fa-plus"></i> {{ __('message.add_article') }}
-                        </a>
-                        <!-- Export Button -->
-                        <button class="btn btn-success btn-sm p-2" data-bs-toggle="modal" data-bs-target="#exportModal">
-                            <i class="fas fa-download"></i> {{ __('message.export') }}
-                        </button>
-                        <!-- Import Button -->
-                        <button class="btn btn-warning btn-sm p-2" data-bs-toggle="modal" data-bs-target="#importModal">
-                            <i class="fas fa-upload"></i> {{ __('message.import') }}
-                        </button>
-                    </ol>
+                <div class="col-sm-6 text-right">
+                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <i class="fas fa-file-import"></i> {{ __('message.import') }}
+                    </button>
+                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#exportModal">
+                        <i class="fas fa-file-export"></i> {{ __('message.export') }}
+                    </button>
+                    <button class="btn btn-info btn-sm ml-2" hreshref="{{ route('article.create') }}">
+                        <i class="fas fa-plus"></i> {{ __('message.add_article') }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -43,7 +40,6 @@
                 <div class="card-header">
                     <h3 class="card-title">{{ __('message.table_articles') }}</h3>
                 </div>
-                <!-- /.card-header -->
                 <div class="card-body table-responsive p-0">
                     <table class="table table-hover text-nowrap">
                         <thead>
@@ -65,11 +61,11 @@
                                     <td>{{ $article->user->name }}</td>
                                     <td>{{ $article->created_at->format('Y-m-d') }}</td>
                                     <td>
-                                        <a href="{{ Route('article.show', $article) }}" class="btn btn-primary btn-sm">
+                                        <a href="{{ route('article.show', $article) }}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-eye"></i> {{ __('message.view') }}
                                         </a>
                                         @can('edit', $article)
-                                            <a href="{{ Route('article.edit', $article) }}" class="btn btn-info btn-sm">
+                                            <a href="{{ route('article.edit', $article) }}" class="btn btn-info btn-sm">
                                                 <i class="fas fa-edit"></i> {{ __('message.edit') }}
                                             </a>
                                         @endcan
@@ -86,10 +82,9 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- /.card-body -->
             </div>
-            <!-- /.card -->
         </div>
+
         {{ $articles->links('pagination::bootstrap-5') }}
     </section>
 
@@ -100,15 +95,15 @@
                 <form action="{{ route('article.import') }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="importModalLabel">Import Articles</h5>
+                        <h5 class="modal-title" id="importModalLabel">{{ __('message.import_articles') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <input type="file" name="file" class="form-control" accept=".xls,.xlsx,.csv">
+                        <input type="file" name="file" class="form-control" accept=".xls,.xlsx,.csv" required>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Import</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('message.close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('message.import') }}</button>
                     </div>
                 </form>
             </div>
@@ -122,19 +117,19 @@
                 <form action="{{ route('article.export') }}" method="GET">
                     @csrf
                     <div class="modal-header">
-                        <h5 class="modal-title" id="exportModalLabel">Export Articles</h5>
+                        <h5 class="modal-title" id="exportModalLabel">{{ __('message.export_articles') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <p>Choose the format for export:</p>
-                        <select class="form-select" name="format">
+                        <p>{{ __('message.choose_export_format') }}</p>
+                        <select class="form-select" name="format" required>
                             <option value="xls">Excel (XLS)</option>
                             <option value="csv">CSV</option>
                         </select>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Export</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{ __('message.close') }}</button>
+                        <button type="submit" class="btn btn-primary">{{ __('message.export') }}</button>
                     </div>
                 </form>
             </div>

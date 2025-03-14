@@ -2,44 +2,23 @@
 
 namespace Modules\Blog\App\Imports;
 
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Modules\Blog\Models\Article;
-use Modules\Blog\Models\Category;
-use Modules\Blog\Models\Tag;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
-use Illuminate\Support\Facades\Auth;
 
 class ArticlesImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
-        $categoryName = $row['category'] ?? 'Default Category'; 
-        $slug = Str::slug($categoryName, '-'); 
-        
-        $category = Category::firstOrCreate(
-            ['name' => $categoryName],
-            ['slug' => $slug] 
-        );
+        Log::info($row); 
 
-        $user_id = Auth::id();
-
-        $article = Article::create([
-            'title' => $row['title'],
-            'content' => $row['content'],
-            'category_id' => $category->id, 
-            'user_id' => $user_id,  
+        return new Article([
+            'title'        => $row['title'] ?? null,
+            'content'      => $row['content'] ?? null,
+            'user_id'      => Auth::id(), // Assuming the current user is the author
+            'category_id'  => $row['category_id'] ?? null, // Fix undefined key issue
         ]);
-    $tags = isset($row['tags']) ? explode(',', $row['tags']) : [];
-
-    $tagIds = [];
-    foreach ($tags as $tagName) {
-        $tag = Tag::firstOrCreate(['name' => $tagName]); // Create tag if it doesn't exist
-        $tagIds[] = $tag->id;
-    }
-
-    $article->tags()->sync($tagIds); // Sync tags with the article
-
-        return $article;
     }
 }

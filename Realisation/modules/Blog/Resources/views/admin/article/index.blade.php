@@ -25,9 +25,9 @@
                     <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#exportModal">
                         <i class="fas fa-file-export"></i> {{ __('message.export') }}
                     </button>
-                    <button class="btn btn-info btn-sm ml-2" hreshref="{{ route('article.create') }}">
+                    <a href="{{ route('article.create') }}" class="btn btn-info btn-sm ml-2">
                         <i class="fas fa-plus"></i> {{ __('message.add_article') }}
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
                     <table class="table table-hover text-nowrap">
                         <thead>
                             <tr>
-                                <th>{{ __('message.number') }}</th>
+                                <th>{{ __('Id') }}</th>
                                 <th>{{ __('message.title') }}</th>
                                 <th>{{ __('message.category') }}</th>
                                 <th>{{ __('message.user') }}</th>
@@ -85,7 +85,9 @@
             </div>
         </div>
 
-        {{ $articles->links('pagination::bootstrap-5') }}
+<div class="d-flex justify-content-center">
+    {{ $articles->links('pagination::bootstrap-5') }}
+</div>
     </section>
 
     <!-- Import Modal -->

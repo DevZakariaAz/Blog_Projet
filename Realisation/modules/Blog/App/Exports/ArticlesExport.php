@@ -15,8 +15,8 @@ class ArticlesExport implements FromCollection, WithHeadings
                 'id' => $article->id,
                 'title' => $article->title,
                 'content' => $article->content,
-                'category_name' => $article->category->name, // Get the category name
-                'tags' => $article->tags->pluck('name')->join(', '), // Get tags as a comma-separated string
+                'category_name' => $article->category->name, 
+                'tags' => $article->tags->pluck('name')->join(', '), 
                 'created_at' => $article->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $article->updated_at->format('Y-m-d H:i:s'),
             ];

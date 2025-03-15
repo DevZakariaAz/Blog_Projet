@@ -17,8 +17,8 @@ class ArticlesImport implements ToModel, WithHeadingRow
         return new Article([
             'title'        => $row['title'] ?? null,
             'content'      => $row['content'] ?? null,
-            'user_id'      => Auth::id(), // Assuming the current user is the author
-            'category_id'  => $row['category_id'] ?? null, // Fix undefined key issue
+            'user_id'      => Auth::id(),  
+            'category_id'  => $row['category_id'] ?? null, 
         ]);
     }
 }

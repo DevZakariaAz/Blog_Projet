@@ -10,6 +10,7 @@ use Modules\Blog\Services\ArticleService;
 use Modules\Blog\App\Exports\ArticlesExport;
 use Modules\Blog\App\Imports\ArticlesImport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
@@ -20,9 +21,18 @@ class ArticleController extends Controller
         $this->articleService = $articleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $articles = Article::paginate(7);
+        $query = Article::query();
+
+        // Filter by name if the search input is provided
+        if ($request->has('crud_search_input') && !empty($request->crud_search_input)) {
+            $query->where('title', 'like', '%' . $request->crud_search_input . '%');
+        }
+
+        // Paginate results
+        $articles = $query->with(['category', 'user'])->paginate(10);
         return view('Blog::admin.article.index', compact('articles'));
     }
 

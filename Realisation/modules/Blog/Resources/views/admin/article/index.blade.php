@@ -19,11 +19,10 @@
             <!-- Search and Buttons Section -->
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <!-- Search Form on the Left -->
                     <form action="{{ route('article.index') }}" method="GET">
-                        <div class="input-group input-group-sm float-left col-md-12 p-0">
+                        <div class="input-group input-group-sm col-md-12 p-0">
                             <input type="text" name="crud_search_input" id="crud_search_input"
-                                   class="form-control float-left" placeholder="Recherche by name"
+                                   class="form-control" placeholder="{{ __('message.search_by_name') }}"
                                    value="{{ request('crud_search_input') }}">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-default">
@@ -34,8 +33,7 @@
                     </form>
                 </div>
 
-                <div class="col-md-6 text-right">
-                    <!-- Buttons on the Right -->
+                <div class="col-md-6 text-end">
                     <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
                         <i class="fas fa-file-import"></i> {{ __('message.import') }}
                     </button>
@@ -84,10 +82,10 @@
                                                 <i class="fas fa-edit"></i> {{ __('message.edit') }}
                                             </a>
                                         @endcan
-                                        <form action="{{ route('article.destroy', $article) }}" method="POST" style="display:inline;">
+                                        <form action="{{ route('article.destroy', $article) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
                                                 <i class="fas fa-trash"></i> {{ __('message.delete') }}
                                             </button>
                                         </form>
@@ -132,7 +130,6 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="{{ route('article.export') }}" method="GET">
-                    @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exportModalLabel">{{ __('message.export_articles') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

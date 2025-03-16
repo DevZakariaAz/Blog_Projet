@@ -22,7 +22,7 @@
                     <form action="{{ route('article.index') }}" method="GET">
                         <div class="input-group input-group-sm col-md-12 p-0">
                             <input type="text" name="crud_search_input" id="crud_search_input"
-                                   class="form-control" placeholder="{{ __('message.search_by_name') }}"
+                                   class="form-control" placeholder="{{ __('Search by name') }}"
                                    value="{{ request('crud_search_input') }}">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-default">
@@ -74,21 +74,13 @@
                                     <td>{{ $article->user->name }}</td>
                                     <td>{{ $article->created_at->format('Y-m-d') }}</td>
                                     <td>
-                                        <a href="{{ route('article.show', $article) }}" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-eye"></i> {{ __('message.view') }}
-                                        </a>
-                                        @can('edit', $article)
-                                            <a href="{{ route('article.edit', $article) }}" class="btn btn-info btn-sm">
-                                                <i class="fas fa-edit"></i> {{ __('message.edit') }}
-                                            </a>
-                                        @endcan
-                                        <form action="{{ route('article.destroy', $article) }}" method="POST" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet article ?')">
-                                                <i class="fas fa-trash"></i> {{ __('message.delete') }}
-                                            </button>
-                                        </form>
+                                            <a href="{{ Route('article.edit',$article) }}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i> </a>
+                                            <form action="{{ Route('article.destroy',$article) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" onclick="confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> </button>
+                                            </form>
+                                            <a href="{{ Route('article.show',$article) }}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> </a>
                                     </td>
                                 </tr>
                             @endforeach

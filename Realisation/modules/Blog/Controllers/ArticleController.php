@@ -7,9 +7,11 @@ use Modules\Blog\Models\Category;
 use Modules\Blog\Models\Tag;
 use Modules\Blog\App\Requests\ArticleRequest;
 use Modules\Blog\Services\ArticleService;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
 use Modules\Blog\App\Exports\ArticlesExport;
 use Modules\Blog\App\Imports\ArticlesImport;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -20,11 +22,19 @@ class ArticleController extends Controller
         $this->articleService = $articleService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::paginate(7);
+        $query = Article::query();
+
+        if ($request->has('crud_search_input') && !empty($request->crud_search_input)) {
+            $query->where('title', 'like', '%' . $request->crud_search_input . '%');
+        }
+
+        $articles = $query->with(['category', 'user'])->paginate(4);
+
         return view('Blog::admin.article.index', compact('articles'));
     }
+
 
     public function create()
     {
@@ -36,8 +46,10 @@ class ArticleController extends Controller
 
     public function store(ArticleRequest $request)
     {
+        // Call the service method to store the article
         $this->articleService->store($request->validated());
-        return redirect()->route('article.index')->with('success', 'Article créé avec succès.');
+
+        return redirect()->route('article.index')->with('success', 'Article added successfully.');
     }
 
     public function show(Article $article)
@@ -56,33 +68,36 @@ class ArticleController extends Controller
 
     public function update(ArticleRequest $request, Article $article)
     {
-        $this->authorize('edit', $article);
+        // Call the service method to update the article
         $this->articleService->update($article, $request->validated());
-        return redirect()->route('article.index')->with('success', 'Article mis à jour avec succès.');
+
+        return redirect()->route('article.index')->with('success', 'Article updated successfully.');
     }
 
     public function destroy(Article $article)
     {
+        // Call the service method to destroy the article
         $this->articleService->destroy($article);
-        return redirect()->route('article.index')->with('success', 'Article supprimé avec succès.');
-    }
-    
-    public function import(ArticleRequest $request)
-    {
-        if ($request->isImport()) {
-            Excel::import(new ArticlesImport, $request->file('file'));
-            return redirect()->route('article.index')->with('success', 'Articles imported successfully.');
-        }
 
-        return back()->withErrors(['file' => 'Aucun fichier valide n\'a été fourni.']);
+        return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
     }
+
+public function import(ArticleRequest $request)
+{
+    if ($request->isImport()) {
+        Excel::import(new ArticlesImport, $request->file('file'));
+        return redirect()->route('article.index')->with('success', 'Articles imported successfully.');
+    }
+
+    return back()->withErrors(['file' => 'No valid file was provided.']);
+}
 
     public function export($format = 'xlsx')
     {
         $allowedFormats = ['csv', 'xlsx'];
 
         if (!in_array($format, $allowedFormats)) {
-            return redirect()->back()->with('error', 'Format non autorisé.');
+            return redirect()->back()->with('error', 'Invalid format.');
         }
 
         return Excel::download(new ArticlesExport, "articles.$format", $format === 'csv' ? \Maatwebsite\Excel\Excel::CSV : \Maatwebsite\Excel\Excel::XLSX);

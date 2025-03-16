@@ -19,11 +19,10 @@
             <!-- Search and Buttons Section -->
             <div class="row mb-2">
                 <div class="col-md-6">
-                    <!-- Search Form on the Left -->
                     <form action="{{ route('article.index') }}" method="GET">
-                        <div class="input-group input-group-sm float-left col-md-12 p-0">
+                        <div class="input-group input-group-sm col-md-12 p-0">
                             <input type="text" name="crud_search_input" id="crud_search_input"
-                                   class="form-control float-left" placeholder="Recherche by name"
+                                   class="form-control" placeholder="{{ __('Search by name') }}"
                                    value="{{ request('crud_search_input') }}">
                             <div class="input-group-append">
                                 <button type="submit" class="btn btn-default">
@@ -34,8 +33,7 @@
                     </form>
                 </div>
 
-                <div class="col-md-6 text-right">
-                    <!-- Buttons on the Right -->
+                <div class="col-md-6 text-end">
                     <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
                         <i class="fas fa-file-import"></i> {{ __('message.import') }}
                     </button>
@@ -76,21 +74,13 @@
                                     <td>{{ $article->user->name }}</td>
                                     <td>{{ $article->created_at->format('Y-m-d') }}</td>
                                     <td>
-                                        <a href="{{ route('article.show', $article) }}" class="btn btn-primary btn-sm">
-                                            <i class="fas fa-eye"></i> {{ __('message.view') }}
-                                        </a>
-                                        @can('edit', $article)
-                                            <a href="{{ route('article.edit', $article) }}" class="btn btn-info btn-sm">
-                                                <i class="fas fa-edit"></i> {{ __('message.edit') }}
-                                            </a>
-                                        @endcan
-                                        <form action="{{ route('article.destroy', $article) }}" method="POST" style="display:inline;">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="fas fa-trash"></i> {{ __('message.delete') }}
-                                            </button>
-                                        </form>
+                                            <a href="{{ Route('article.edit',$article) }}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i> </a>
+                                            <form action="{{ Route('article.destroy',$article) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('delete')
+                                                <button type="submit" onclick="confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> </button>
+                                            </form>
+                                            <a href="{{ Route('article.show',$article) }}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> </a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -132,7 +122,6 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <form action="{{ route('article.export') }}" method="GET">
-                    @csrf
                     <div class="modal-header">
                         <h5 class="modal-title" id="exportModalLabel">{{ __('message.export_articles') }}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

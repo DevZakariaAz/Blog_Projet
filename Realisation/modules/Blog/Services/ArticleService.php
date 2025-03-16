@@ -7,46 +7,40 @@ use Illuminate\Support\Facades\Auth;
 
 class ArticleService
 {
-    /**
-     * Store a new article.
-     */
-    public function store(array $data)
+    public function store($validatedData)
     {
-        $data['user_id'] = Auth::id();
-        $article = Article::create($data);
-        $this->syncTags($article, $data['tags']);
-        return $article;
-    }
-
-    /**
-     * Update an existing article.
-     */
-    public function update(Article $article, array $data)
-    {
-        $article->update([
-            'title' => $data['title'],
-            'content' => $data['content'],
-            'category_id' => $data['category'],
+        // Create a new article
+        $article = Article::create([
+            'title' => $validatedData['title'],
+            'content' => $validatedData['content'],
+            'category_id' => $validatedData['category'],
+            'user_id' => Auth::id(),
         ]);
-        $this->syncTags($article, $data['tags']);
+
+        // Attach tags to the article (many-to-many relationship)
+        $article->tags()->sync($validatedData['tags']);
+
         return $article;
     }
 
-    /**
-     * Delete an article.
-     */
+    public function update(Article $article, $validatedData)
+    {
+        // Update the article's properties
+        $article->update([
+            'title' => $validatedData['title'],
+            'content' => $validatedData['content'],
+            'category_id' => $validatedData['category'],
+        ]);
+
+        // Sync the tags
+        $article->tags()->sync($validatedData['tags']);
+
+        return $article;
+    }
+
     public function destroy(Article $article)
     {
+        $article->tags()->detach(); 
         $article->delete();
-    }
-
-    /**
-     * Sync tags with article.
-     */
-    protected function syncTags(Article $article, array $tags)
-    {
-        if (!empty($tags)) {
-            $article->tags()->sync($tags);
-        }
     }
 }

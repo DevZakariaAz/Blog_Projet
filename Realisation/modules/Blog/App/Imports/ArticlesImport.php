@@ -2,23 +2,19 @@
 
 namespace Modules\Blog\App\Imports;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Modules\Blog\Models\Article;
 use Maatwebsite\Excel\Concerns\ToModel;
-use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class ArticlesImport implements ToModel, WithHeadingRow
+class ArticlesImport implements ToModel
 {
     public function model(array $row)
     {
-        Log::info($row); 
-
+        // Ensure the columns match with your Excel file
         return new Article([
-            'title'        => $row['title'] ?? null,
-            'content'      => $row['content'] ?? null,
-            'user_id'      => Auth::id(),  
-            'category_id'  => $row['category_id'] ?? null, 
+            'title' => $row['title'],
+            'content' => $row['content'],
+            'category_id' => $row['category_id'],
+            'user_id' => $row['user_id'],
         ]);
     }
 }

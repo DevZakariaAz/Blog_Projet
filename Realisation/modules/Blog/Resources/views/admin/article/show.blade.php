@@ -47,6 +47,14 @@
                                 <td>{{ $article->content }}</td>
                             </tr>
                             <tr>
+                                <th>Tags</th>
+                                <td>
+                                    @foreach ($article->tags as $tag)
+                                        <span class="badge badge-success">{{ $tag->name }}</span>
+                                    @endforeach
+                                </td>
+                            </tr>
+                            <tr>
                                 <th>Author</th>
                                 <td>{{ $article->user->name }}</td>
                             </tr>

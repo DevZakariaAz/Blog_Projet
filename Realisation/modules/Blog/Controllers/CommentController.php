@@ -2,81 +2,67 @@
 
 namespace Modules\Blog\Controllers;
 
-use Illuminate\Support\Facades\Auth;
-use Modules\Blog\Models\Article;
 use Modules\Blog\Models\Comment;
-use Modules\Blog\App\Requests\CommentRequest;
+use Modules\Blog\Services\CommentService;
+use Illuminate\Http\Request;
 
 class CommentController extends Controller
 {
-    public function index()
+    protected $commentService;
+
+    public function __construct(CommentService $commentService)
     {
-        $comments = Comment::All();
-        return view("Blog::admin.comment.index", compact("comments"));
+        $this->commentService = $commentService;
     }
 
-    public function indexByArticle(Article $article)
+    public function index()
     {
-        $comments = $article->comments;
-        return view("Blog::admin.comment.indexByArticle", compact("comments", "article"));
+        $comments = $this->commentService->getAllComments();
+        return view('Blog::admin.comment.index', compact('comments'));
     }
 
     public function create()
     {
-        // Implementation for creating a comment (not provided)
+        return view('Blog::admin.comment.create');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'content' => 'required|max:1000',
+            'post_id' => 'required|exists:posts,id',
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $this->commentService->createComment($validated);
+
+        return redirect()->route('comment.index')->with('success', 'Commentaire créé avec succès.');
     }
 
     public function show(Comment $comment)
     {
-        return view("Blog::admin.comment.show", compact("comment"));
+        return view('Blog::admin.comment.show', compact('comment'));
     }
 
     public function edit(Comment $comment)
     {
-        return view("Blog::admin.comment.edit", compact("comment"));
+        return view('Blog::admin.comment.edit', compact('comment'));
     }
 
-    public function update(CommentRequest $request, Comment $comment)
+    public function update(Request $request, Comment $comment)
     {
-
-        $comment->update([
-            'content' => $request->content,
+        $validated = $request->validate([
+            'content' => 'required|max:1000',
         ]);
 
-        return redirect()->route('comment.show', $comment)
-            ->with('success', 'Commentaire modifié avec succès.');
-    }
+        $this->commentService->updateComment($comment, $validated);
 
-    public function store(CommentRequest $request, $articleId)
-    {
-        $article = Article::findOrFail($articleId);
-
-        $article->comments()->create([
-            'content' => $request->content,
-            'user_id' => Auth::id(),
-        ]);
-
-        return redirect()
-            ->route('public.public.show', $article->id)
-            ->with('success', 'Your comment has been added!');
+        return redirect()->route('comment.index');
     }
 
     public function destroy(Comment $comment)
     {
-        $comment->delete();
-
-        return redirect()
-            ->route('comment.index')
-            ->with('success', 'Commentaire supprimé avec succès.');
-    }
-
-    public function destroyByArticle(Comment $comment)
-    {
-        $article = $comment->article;
-        $comment->delete();
-
-        return redirect()
-            ->route('comment.indexByArticle', $article)
-            ->with('success', 'Commentaire supprimé avec succès.');
+        $this->commentService->deleteComment($comment);
+        return redirect()->route('comment.index');
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Modules\Blog\Controllers;
 
+use Modules\Blog\App\Requests\TagRequest; 
 use Modules\Blog\Models\Tag;
 use Modules\Blog\Services\TagService;
-use Illuminate\Http\Request;
 
 class TagController extends Controller
 {
@@ -26,16 +26,11 @@ class TagController extends Controller
         return view('Blog::admin.tag.create');
     }
 
-    public function store(Request $request)
+    public function store(TagRequest $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'slug'  => 'required|max:255',
-        ]);
+        $this->tagService->createTag($request->validated());
 
-        $this->tagService->createTag($validated);
-
-        return redirect()->route('tag.index')->with('success', 'Catégorie créé avec succès.');
+        return redirect()->route('tag.index')->with('success', 'Tag créé avec succès.');
     }
 
     public function show(Tag $tag)
@@ -48,14 +43,9 @@ class TagController extends Controller
         return view('Blog::admin.tag.edit', compact('tag'));
     }
 
-    public function update(Request $request, Tag $tag)
+    public function update(TagRequest $request, Tag $tag)
     {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'slug'  => 'required|max:255',
-        ]);
-
-        $this->tagService->updateTag($tag, $validated);
+        $this->tagService->updateTag($tag, $request->validated());
 
         return redirect()->route('tag.index');
     }

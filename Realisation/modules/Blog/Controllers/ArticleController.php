@@ -43,19 +43,12 @@ class ArticleController extends Controller
         ]);
     }
 
-    public function store(ArticleRequest $request)
-    {
-        // Call the service method to store the article
-        $this->articleService->store($request->validated());
-
-        return redirect()->route('article.index')->with('success', 'Article added successfully.');
-    }
-
+    
     public function show(Article $article)
     {
         return view('Blog::admin.article.show', compact('article'));
     }
-
+    
     public function edit(Article $article)
     {
         return view('Blog::admin.article.edit', [
@@ -65,9 +58,15 @@ class ArticleController extends Controller
         ]);
     }
 
+    public function store(ArticleRequest $request)
+    {
+        $this->articleService->store($request->validated());
+
+        return redirect()->route('article.index')->with('success', 'Article added successfully.');
+    }
+    
     public function update(ArticleRequest $request, Article $article)
     {
-        // Call the service method to update the article
         $this->articleService->update($article, $request->validated());
 
         return redirect()->route('article.index')->with('success', 'Article updated successfully.');
@@ -75,7 +74,6 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
-        // Call the service method to destroy the article
         $this->articleService->destroy($article);
 
         return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
@@ -87,23 +85,18 @@ class ArticleController extends Controller
             'file' => 'required|mimes:xlsx,csv|max:2048',
         ]);
 
-        try {
-            // Debug uploaded file
-            if (!$request->hasFile('file')) {
-                return redirect()->back()->with('error', 'No file uploaded.');
-            }
-
-            $file = $request->file('file');
-            if (!$file->isValid()) {
-                return redirect()->back()->with('error', 'Invalid file upload.');
-            }
-
-            Excel::import(new ArticlesImport, $file);
-
-            return redirect()->route('article.index')->with('success', 'Articles imported successfully.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Import failed: ' . $e->getMessage());
+        if (!$request->hasFile('file')) {
+            return redirect()->back()->with('error', 'No file uploaded.');
         }
+
+        $file = $request->file('file');
+        if (!$file->isValid()) {
+            return redirect()->back()->with('error', 'Invalid file upload.');
+        }
+
+        Excel::import(new ArticlesImport, $file);
+
+        return redirect()->route('article.index')->with('success', 'Articles imported successfully.');
     }       
 
 

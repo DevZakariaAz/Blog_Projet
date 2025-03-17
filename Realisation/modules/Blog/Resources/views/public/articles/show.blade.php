@@ -8,20 +8,22 @@
         <h1 class="text-4xl font-extrabold text-gray-900">Article Details</h1>
     </div>
 
-    <!-- Article Card -->
-    <div class="bg-white shadow-xl rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300">
-        <!-- Article Image -->
-        <img class="w-full h-80 object-cover rounded-t-lg transform transition-transform duration-300 hover:scale-105"
-            src="{{ $article->image_url ?: 'https://ui-avatars.com/api/?name=' . urlencode($article->title) . '&background=random&color=fff&bold=true&size=300&length=2' }}" 
-            alt="{{ $article->title }}">
+    <!-- Article Section -->
+    <div class="bg-white shadow-xl rounded-lg overflow-hidden hover:shadow-2xl transition-shadow duration-300 p-6 flex flex-col md:flex-row gap-6">
+        
+        <!-- Image on the Left -->
+        <div class="md:w-1/3 w-full flex justify-center">
+            <img class="w-64 h-64 object-cover rounded-lg" 
+                src="{{ $article->image_url ?: 'https://ui-avatars.com/api/?name=' . urlencode($article->title) . '&background=random&color=fff&bold=true&size=300&length=2' }}" 
+                alt="{{ $article->title }}">
+        </div>
 
-        <div class="p-8 space-y-4">
-
-            <!-- Article Title -->
+        <!-- Content on the Right -->
+        <div class="md:w-2/3 w-full space-y-4">
             <h2 class="text-3xl font-semibold text-gray-900">{{ $article->title }}</h2>
 
             <!-- Author and Metadata -->
-            <div class="flex flex-wrap gap-4 mb-6 text-sm text-gray-600">
+            <div class="flex flex-wrap gap-4 mb-4 text-sm text-gray-600">
                 <p>By <span class="font-medium text-gray-800">{{ $article->user->name }}</span></p>
                 <p>Published on <span>{{ $article->created_at->format('F j, Y') }}</span></p>
                 <p>Category: 
@@ -32,52 +34,50 @@
             </div>
 
             <!-- Article Content -->
-            <div class="text-lg text-gray-800 leading-relaxed">
-                {{ $article->content }}
-            </div>
+            <p class="text-lg text-gray-800 leading-relaxed">{{ $article->content }}</p>
         </div>
     </div>
 
-    <!-- Comments Section -->
-    <div class="bg-gray-50 shadow-lg rounded-lg p-8 mt-12">
-        <h3 class="text-2xl font-semibold text-gray-900 mb-6">Comments</h3>
+    <!-- 🔥 YouTube-Style Comments Section (Below Article) -->
+    <div class="mt-12 max-w-4xl mx-auto">
 
-        <!-- Display Comments -->
+        <!-- 📝 Comment Input Box -->
+        <div class="flex items-start space-x-4 mb-6">
+            <img class="w-10 h-10 rounded-full object-cover" 
+                src="{{ auth()->user()->profile_picture ?? 'https://ui-avatars.com/api/?name=' . urlencode(auth()->user()->name ?? 'User') . '&background=random&color=fff&size=300&length=1' }}" 
+                alt="User">
+            <form action="{{ route('public.article.comments.store', $article->id) }}" method="POST" class="w-full">
+                @csrf
+                <textarea name="content" rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition-all" placeholder="Add a comment..." required></textarea>
+                <button type="submit" class="mt-2 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                    Comment
+                </button>
+            </form>
+        </div>
+
+        <!-- 🗨️ Comments List -->
+        <h3 class="text-xl font-semibold text-gray-900 mb-4">{{ $article->comments->count() }} Comments</h3>
+
         @if ($article->comments->isEmpty())
-            <p class="text-gray-600 mt-4">No comments yet. Be the first to comment!</p>
+            <p class="text-gray-600">No comments yet. Be the first to comment!</p>
         @else
-            <div class="mt-6 space-y-6">
-                @foreach ($article->comments as $comment)
+            <div class="space-y-6">
+                @foreach ($article->comments->sortByDesc('created_at') as $comment)
                     <div class="flex space-x-4 border-b border-gray-300 pb-4">
-                        <!-- User Avatar -->
-                        <img class="w-14 h-14 rounded-full object-cover" 
-                            src="{{ $comment->user->profile_picture ?? 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->name) . '&background=random&color=fff&bold=true&size=400&length=2' }}" 
+                        <img class="w-10 h-10 rounded-full object-cover" 
+                            src="{{ $comment->user->profile_picture ?? 'https://ui-avatars.com/api/?name=' . urlencode($comment->user->name) . '&background=random&color=fff&size=300&length=1' }}" 
                             alt="{{ $comment->user->name }}">
-
                         <div class="flex-1">
-                            <!-- User Name and Timestamp -->
                             <div class="flex justify-between items-center">
                                 <p class="font-medium text-gray-800">{{ $comment->user->name }}</p>
                                 <p class="text-sm text-gray-500">{{ $comment->created_at->diffForHumans() }}</p>
                             </div>
-
-                            <!-- Comment Content -->
                             <p class="mt-2 text-gray-700">{{ $comment->content }}</p>
                         </div>
                     </div>
                 @endforeach
             </div>
         @endif
-
-        <!-- Add Comment Form -->
-        <form action="{{ route('public.article.comments.store', $article->id) }}" id="comment-form" method="POST" class="mt-8">
-            @csrf
-            <textarea name="content" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-400 transition-all" placeholder="Write your comment..." required></textarea>
-
-            <button type="submit" class="mt-4 w-full px-4 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                Add Comment
-            </button>
-        </form>
     </div>
 
     <!-- Back to Articles Button -->

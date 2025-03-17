@@ -24,6 +24,17 @@
                     </div>
                 </div>
             </div>
+                <div class="col-md-6 text-end">
+                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <i class="fas fa-file-import"></i> {{ __('message.import') }}
+                    </button>
+                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#exportModal">
+                        <i class="fas fa-file-export"></i> {{ __('message.export') }}
+                    </button>
+                    <a href="{{ route('article.category') }}" class="btn btn-info btn-sm ml-2">
+                        <i class="fas fa-plus"></i> {{ __('message.add_article') }}
+                    </a>
+                </div>
         </section>
 
         <!-- Main content -->

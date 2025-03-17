@@ -11,7 +11,6 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Modules\Blog\App\Exports\ArticlesExport;
 use Modules\Blog\App\Imports\ArticlesImport;
-use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -82,15 +81,32 @@ class ArticleController extends Controller
         return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
     }
 
-public function import(ArticleRequest $request)
-{
-    if ($request->isImport()) {
-        Excel::import(new ArticlesImport, $request->file('file'));
-        return redirect()->route('article.index')->with('success', 'Articles imported successfully.');
-    }
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv|max:2048',
+        ]);
 
-    return back()->withErrors(['file' => 'No valid file was provided.']);
-}
+        try {
+            // Debug uploaded file
+            if (!$request->hasFile('file')) {
+                return redirect()->back()->with('error', 'No file uploaded.');
+            }
+
+            $file = $request->file('file');
+            if (!$file->isValid()) {
+                return redirect()->back()->with('error', 'Invalid file upload.');
+            }
+
+            Excel::import(new ArticlesImport, $file);
+
+            return redirect()->route('article.index')->with('success', 'Articles imported successfully.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Import failed: ' . $e->getMessage());
+        }
+    }       
+
+
 
     public function export($format = 'xlsx')
     {

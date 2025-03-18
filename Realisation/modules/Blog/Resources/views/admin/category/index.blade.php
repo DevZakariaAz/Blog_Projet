@@ -19,22 +19,19 @@
                 <div class="row mb-2 justify-content-end">
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <a href="{{ Route('category.create') }}" class="btn btn-primary btn-sm p-2 text-white"><i class="fas fa-plus"></i> Ajouter catégorie</a>
+                        <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                            <i class="fas fa-file-import"></i> {{ __('message.import') }}
+                        </button>
+                        <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#exportModal">
+                            <i class="fas fa-file-export"></i> {{ __('message.export') }}
+                        </button>
+                        <a href="{{ route('category.create') }}" class="btn btn-info btn-sm ml-2">
+                            <i class="fas fa-plus"></i> Add category
+                        </a>
                         </ol>
                     </div>
                 </div>
             </div>
-                <div class="col-md-6 text-end">
-                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#importModal">
-                        <i class="fas fa-file-import"></i> {{ __('message.import') }}
-                    </button>
-                    <button class="btn btn-secondary btn-sm ml-2" data-bs-toggle="modal" data-bs-target="#exportModal">
-                        <i class="fas fa-file-export"></i> {{ __('message.export') }}
-                    </button>
-                    <a href="{{ route('article.category') }}" class="btn btn-info btn-sm ml-2">
-                        <i class="fas fa-plus"></i> {{ __('message.add_article') }}
-                    </a>
-                </div>
         </section>
 
         <!-- Main content -->
@@ -52,7 +49,6 @@
                             <table class="table table-hover text-nowrap">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>Nom</th>
                                         <th>slug</th>
                                         <th>Date</th>
@@ -62,18 +58,17 @@
                                 <tbody>
                                     @foreach($categories as $category)
                                     <tr>
-                                        <td>{{ $category->id }}</td>
                                         <td>{{ $category->name }}</td>
                                         <td>{{ $category->slug }}</td>
                                         <td>{{ $category->created_at->format('Y-m-d') }}</td>
                                         <td>
+                                            <a href="{{ Route('category.show',$category) }}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> </a>
                                             <a href="{{ Route('category.edit',$category) }}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i> </a>
                                             <form action="{{ Route('category.destroy',$category) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('delete')
                                                 <button type="submit" onclick="confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> </button>
                                             </form>
-                                            <a href="{{ Route('category.show',$category) }}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> </a>
                                         </td>
                                     </tr>
                                     @endforeach

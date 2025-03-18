@@ -6,6 +6,9 @@ use Modules\Blog\Models\Category;
 use Modules\Blog\App\Requests\CategoryRequest;
 use Modules\Blog\Services\CategoryService;
 use Illuminate\Http\Request;
+use Modules\Blog\App\Exports\CategoriesExport;
+use Modules\Blog\App\Imports\CategoriesImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class CategoryController extends Controller
 {
@@ -60,4 +63,20 @@ class CategoryController extends Controller
         $this->categoryService->destroy($category);
         return redirect()->route('category.index');
     }
+        public function export()
+    {
+        return Excel::download(new CategoriesExport, 'categories.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new CategoriesImport, $request->file('file'));
+
+        return back()->with('success', 'Categories imported successfully!');
+    }
+
 }

@@ -1,45 +1,64 @@
 @extends('Blog::layouts.admin')
-    @section('content')
-        <!-- Content Header -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Détail</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{Route('dashboard')}}">Accueil</a></li>
-                            <li class="breadcrumb-item active"><a href="{{Route('category.index')}}">Categories</a></li>
-                            <li class="breadcrumb-item active">view</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-            <div class="container-fluid">
-                <div class="row mb-2 justify-content-end">
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <a href="{{ Route('category.edit',$category) }}" class="btn btn-primary btn-sm p-2 text-white"><i class="fas fa-edit mr-2"></i>Modifier</a>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="content">
-            <div class="container-fluid">
-                <div class="card p-4">
-                    <h4>id : </h4>
-                    <p>{{ $category->id }}</p>
-                    <h4>name : </h4>
-                    <p>{{ $category->name }}</p>
-                    <h4>slug : </h4>
-                    <p>{{ $category->slug }}</p>
-                    <h4>created at : </h4>
-                    <p>{{ $category->created_at }}</p>
-                    
 
+@section('content')
+    <!-- Content Header -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-3 align-items-center">
+                <div class="col-md-6">
+                    <h1 class="h3 mb-0">Category Details</h1>
+                </div>
+                <div class="col-md-6 text-md-right">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Accueil</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('category.index') }}">Categories</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">View</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
-        </section>
-    @endsection
+            <div class="row justify-content-end">
+                <div class="col-auto">
+                    <a href="{{ route('category.edit', $category) }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-edit mr-1"></i> Modify
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Category Details -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="card shadow-sm">
+                <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                    <h3 class="card-title">{{ $category->name }}</h3>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>Name</th>
+                                <td>{{ $category->name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Slug</th>
+                                <td>{{ $category->slug }}</td>
+                            </tr>
+                            <tr>
+                                <th>Created At</th>
+                                <td>{{ $category->created_at->format('d M Y, H:i') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card-footer text-right">
+                    <a href="{{ route('category.index') }}" class="btn btn-secondary btn-sm">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Categories
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+@endsection

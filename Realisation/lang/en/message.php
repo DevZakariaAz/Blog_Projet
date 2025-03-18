@@ -21,4 +21,11 @@ return [
     'import_articles' => 'Import Articles',
     'export_articles' => 'Export Articles',
     'choose_export_format' => 'Choose Export Format',
+    'list_categories' => 'List of Categories',
+    'categories' => 'Categories',
+    'add_category' => 'Add Category',
+    'table_categories' => 'Categories Table',
+    'import_categories' => 'Import Categories',
+    'export_categories' => 'Export Categories',
+    'choose_export_format_category' => 'Choose Export Format for Categories',
 ];

@@ -36,6 +36,9 @@ class ArticleService
 
     public function destroy(Article $article)
     {
+        if (Auth::id() === $article->user_id) {
+            return $article->delete(); // Allow deletion if the user is the owner
+        }
         $article->tags()->detach(); 
         $article->delete();
     }

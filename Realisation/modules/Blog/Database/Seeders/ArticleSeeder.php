@@ -27,7 +27,7 @@ class ArticleSeeder extends Seeder
             [
                 'title' => 'How to Use Tailwind CSS for Responsive Web Design',
                 'content' => 'Tailwind CSS is a utility-first CSS framework that makes it easy to design responsive websites. This article demonstrates how to use Tailwind to create responsive layouts and components that adjust seamlessly to various screen sizes.',
-                'user_id' => 2,
+                'user_id' => 3,
                 'category_id' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -35,7 +35,7 @@ class ArticleSeeder extends Seeder
             [
                 'title' => 'Exploring the New Features in PHP 8.1',
                 'content' => 'PHP 8.1 introduces several new features that enhance performance and developer productivity. This article highlights exciting new additions like Fibers, Intersection Types, and Array Unpacking, which improve PHP\'s functionality and usability.',
-                'user_id' => 2,
+                'user_id' => 3,
                 'category_id' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

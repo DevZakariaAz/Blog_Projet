@@ -74,13 +74,17 @@
                                     <td>{{ $article->user->name }}</td>
                                     <td>{{ $article->created_at->format('Y-m-d') }}</td>
                                     <td>
-                                            <a href="{{ Route('article.show',$article) }}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> </a>
-                                            <a href="{{ Route('article.edit',$article) }}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i> </a>
+                                        <a href="{{ Route('article.show',$article) }}" class="btn btn-secondary btn-sm"><i class="fas fa-eye"></i> </a>
+                                        @if(Auth::user()->id === $article->user_id && Auth::user()->hasRole('admin'))
+                                        <a href="{{ Route('article.edit',$article) }}" class="btn btn-info btn-sm"><i class="fas fa-edit"></i> </a>
                                             <form action="{{ Route('article.destroy',$article) }}" method="POST" class="d-inline">
                                                 @csrf
                                                 @method('delete')
-                                                <button type="submit" onclick="confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> </button>
+                                                <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cet élément ?')" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
                                             </form>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach

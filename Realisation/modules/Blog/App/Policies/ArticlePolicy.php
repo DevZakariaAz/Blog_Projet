@@ -37,15 +37,15 @@ class ArticlePolicy
      */
     public function update(User $user, Article $article): bool
     {
-        return $user->id === $article->user->id && $user->hasPermissionTo('view admin');
+        return $user->id === $article->user_id; 
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Article $article): bool
+    public function delete(User $user, Article $article)
     {
-        return $user->id === $article->user->id && $user->hasPermissionTo('view admin');
+        return $user->id === $article->user_id;
     }
 
     /**

@@ -11,6 +11,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Modules\Blog\App\Exports\ArticlesExport;
 use Modules\Blog\App\Imports\ArticlesImport;
+use Illuminate\Support\Facades\Auth;
 
 class ArticleController extends Controller
 {
@@ -67,6 +68,10 @@ class ArticleController extends Controller
     
     public function update(ArticleRequest $request, Article $article)
     {
+        if (!Auth::user()->can('update', $article)) {
+            return redirect()->route('article.index')->with('error', 'Unauthorized action.');
+        }
+
         $this->articleService->update($article, $request->validated());
 
         return redirect()->route('article.index')->with('success', 'Article updated successfully.');
@@ -74,6 +79,10 @@ class ArticleController extends Controller
 
     public function destroy(Article $article)
     {
+        if (!Auth::user()->can('delete', $article)) {
+            return redirect()->route('article.index')->with('error', 'Unauthorized action.');
+        }
+
         $this->articleService->destroy($article);
 
         return redirect()->route('article.index')->with('success', 'Article deleted successfully.');
